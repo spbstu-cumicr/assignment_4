@@ -1,38 +1,16 @@
 #include "mcu_support_package/inc/stm32f4xx.h"
 #include "led.h"
 #include "timer.h"
-#include "main/Lab4_Test.h"
+#include "variants.h"
+#include "lab_4_test.h"
 
 #include <stdint.h>
 
 // Последовательность загорания светодиодов
-// Укажите последовательность в соответствии с вариантом
-// Используйте макроопределения цветом светодиодов:
-// LED_GREEN — зелёный
-// LED_YELLOW — жёлтый
-// LED_RED — красный
-// LED_BLUE — синий
-static const uint8_t ledColour[] = {
-	LED_BLUE,
-	LED_GREEN,
-	LED_BLUE,
-	LED_YELLOW,
-	LED_RED,
-	LED_YELLOW,
-	LED_BLUE,
-	LED_GREEN
-};
+static const uint8_t *ledColour;
 
-static const uint32_t delay[] = {
-	2400,
-	3000,
-	4000,
-	3300,
-	1400,
-	4200,
-	4100,
-	3600
-};
+// Длительности горения светодиодов
+static const uint32_t *delay;
 
 // Таймаут таймера
 const uint32_t timeout_ms = 1;
@@ -44,24 +22,35 @@ int main(void)
 {
 	// Вариант задания
 	static uint8_t variant = 0;	
-	variant = Lab4_Test_ini((char *)lastName);	
 
 	// Контрольная сумма
 	static uint32_t checksum = 0;
 	static uint8_t decision[] = {0, 0, 0};
 	
-	// Инициализируем клавиатуру
+	// Инициализируем светодиоды
 	static Led *led = NULL;
 	led = initLed();
 	
 	// Инициализируем секундомер
 	static Clock *clock = NULL;
 	clock = initClock(timeout_ms);
+    
+    // Инициализируем тестовую прошивку
+    variant = initTest(lastName);
+
+    // Определяем последовательность загорания светодиодов
+    ledColour = getLedColourList(variant);
+    
+    // Определяем длительности горения светодиодов
+    delay = getDelayList(variant);
 
 	while(1)
 	{
 		// Номер светодиода
 		static uint8_t ledNumber = 0;
+        
+        // Определяем правильность длительностей горения светодиодов
+        getDecision(decision);
 		
 		Led *currentLed = &led[ledColour[ledNumber]];
 		if (currentLed->isOn(currentLed) == false)
@@ -79,12 +68,13 @@ int main(void)
 		{
 			// Переходим к следующему светодиоду
 			ledNumber++;
-			ledNumber %= ARRAY_SIZE(ledColour);
+			ledNumber %= ledColourSize();
 			
 			clock->reset(clock);
 		}
 		
-		checksum = read_flag(decision);
+        // Считаем контрольную сумму
+		checksum = getChecksum();
 	}
 	
 	return 0;

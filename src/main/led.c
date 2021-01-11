@@ -3,47 +3,47 @@
 static Led led[] = 
 {
 	{
+        .turnOn     = turnOnLed,
+		.turnOff    = turnOffLed,
+		.isOn       = isLedOn,
 		.periphPort = RCC_AHB1Periph_GPIOD,
 		.gpioPort   = GPIOD,
 		.gpioPin    = GPIO_Pin_12,
 		.gpioPinSrc = GPIO_PinSource12,
-		.state      = false,
-		.turnOn     = turnOnLed,
-		.turnOff    = turnOffLed,
-		.isOn       = isLedOn
+		.state      = false
 	},
 	
 	{
+        .turnOn     = turnOnLed,
+		.turnOff    = turnOffLed,
+		.isOn       = isLedOn,
 		.periphPort = RCC_AHB1Periph_GPIOD,
 		.gpioPort   = GPIOD,
 		.gpioPin    = GPIO_Pin_13,
 		.gpioPinSrc = GPIO_PinSource13,
-		.state      = false,
-		.turnOn     = turnOnLed,
-		.turnOff    = turnOffLed,
-		.isOn       = isLedOn
+		.state      = false
 	},
 	
 	{
+        .turnOn     = turnOnLed,
+		.turnOff    = turnOffLed,
+		.isOn       = isLedOn,
 		.periphPort = RCC_AHB1Periph_GPIOD,
 		.gpioPort   = GPIOD,
 		.gpioPin    = GPIO_Pin_14,
 		.gpioPinSrc = GPIO_PinSource14,
-		.state      = false,
-		.turnOn     = turnOnLed,
-		.turnOff    = turnOffLed,
-		.isOn       = isLedOn
+		.state      = false
 	},
 	
 	{
+        .turnOn     = turnOnLed,
+		.turnOff    = turnOffLed,
+		.isOn       = isLedOn,
 		.periphPort = RCC_AHB1Periph_GPIOD,
 		.gpioPort   = GPIOD,
 		.gpioPin    = GPIO_Pin_15,
 		.gpioPinSrc = GPIO_PinSource15,
-		.state      = false,
-		.turnOn     = turnOnLed,
-		.turnOff    = turnOffLed,
-		.isOn       = isLedOn
+		.state      = false
 	},
 };
 
@@ -55,15 +55,15 @@ Led *initLed(void)
 		RCC_AHB1PeriphClockCmd(led[ledNumber].periphPort, ENABLE);
 		
 		// Устанавливаем пин светодиода в режим вывода c двухтактным каскадом с низкой частотой
-		GPIO_InitTypeDef new_led;
-		GPIO_StructInit(&new_led);
+		GPIO_InitTypeDef newLed;
+		GPIO_StructInit(&newLed);
 
-		new_led.GPIO_Pin   = led[ledNumber].gpioPin;
-		new_led.GPIO_Mode  = GPIO_Mode_OUT;
-		new_led.GPIO_Speed = GPIO_Low_Speed;
-		new_led.GPIO_OType = GPIO_OType_PP;
+		newLed.GPIO_Pin   = led[ledNumber].gpioPin;
+		newLed.GPIO_Mode  = GPIO_Mode_OUT;
+		newLed.GPIO_Speed = GPIO_Low_Speed;
+		newLed.GPIO_OType = GPIO_OType_PP;
 		
-		GPIO_Init(led[ledNumber].gpioPort, &new_led);
+		GPIO_Init(led[ledNumber].gpioPort, &newLed);
 	}
 	
 	return led;

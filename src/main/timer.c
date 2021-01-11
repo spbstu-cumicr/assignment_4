@@ -2,10 +2,10 @@
 
 static volatile Clock clock =
 {
-	.startTime = 0,
-	.counter   = 0,
 	.getTime   = getClockTime,
-	.reset     = resetClock
+	.reset     = resetClock,
+	.startTime = 0,
+	.counter   = 0
 };
 
 void TIM3_IRQHandler(void)
@@ -27,14 +27,14 @@ void initTimer(const uint32_t timeout_ms)
 	RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM3, ENABLE);
 	
 	// Настраиваем таймер общего назначения TIM3
-	TIM_TimeBaseInitTypeDef led_timer;
-	TIM_TimeBaseStructInit(&led_timer);
+	TIM_TimeBaseInitTypeDef ledTimer;
+	TIM_TimeBaseStructInit(&ledTimer);
 	
-	led_timer.TIM_Prescaler = prescaler;
-	led_timer.TIM_CounterMode = TIM_CounterMode_Up;
-	led_timer.TIM_Period = period;
+	ledTimer.TIM_Prescaler = prescaler;
+	ledTimer.TIM_CounterMode = TIM_CounterMode_Up;
+	ledTimer.TIM_Period = period;
 	
-	TIM_TimeBaseInit(TIM3, &led_timer);
+	TIM_TimeBaseInit(TIM3, &ledTimer);
 	
 	// Включаем таймер общего назначения TIM3
 	TIM_Cmd(TIM3, ENABLE);
